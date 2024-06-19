@@ -36,6 +36,8 @@
   },
   "scripts": {
     "test": "vendor/bin/phpspec run",
+    "static-analyzer": "vendor/bin/phpstan",
+    "check-style": "vendor/bin/php-cs-fixer fix --dry-run",
     "fix-style": "vendor/bin/php-cs-fixer fix"
   },
   "repositories": [
