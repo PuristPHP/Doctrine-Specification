@@ -1,0 +1,4 @@
+suites:
+    main:
+        namespace: Purist\Specification\Doctrine
+        psr4_prefix: Purist\Specification\Doctrine

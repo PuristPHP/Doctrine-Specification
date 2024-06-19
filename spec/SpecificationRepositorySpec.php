@@ -11,20 +11,17 @@ use Prophecy\Argument;
 use Purist\Specification\Doctrine\Exception\LogicException;
 use Purist\Specification\Doctrine\Result\ModifierInterface;
 use Purist\Specification\Doctrine\SpecificationInterface;
-use Purist\Specification\Doctrine\SpecificationRepository;
 
 class SpecificationRepositorySpec extends ObjectBehavior
 {
     private string $dqlAlias = 'e';
-
     private string $expression = 'expr';
-
     private string $result = 'result';
 
     public function let(EntityManager $entityManager, ClassMetadata $classMetadata): void
     {
         $classMetadata->name = 'foo';
-        $this->beAnInstanceOf(SpecificationRepository::class);
+        $this->beAnInstanceOf(SpecificationRepositoryDouble::class);
         $this->beConstructedWith($entityManager, $classMetadata);
     }
 
