@@ -1,24 +1,23 @@
 # Doctrine Specification
-[![Build Status](https://travis-ci.org/rikbruil/Doctrine-Specification.svg)](https://travis-ci.org/rikbruil/Doctrine-Specification)
-[![Coverage Status](https://coveralls.io/repos/rikbruil/Doctrine-Specification/badge.svg?branch=master)](https://coveralls.io/r/rikbruil/Doctrine-Specification?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/rikbruil/doctrine-specification/v/stable.svg)](https://packagist.org/packages/rikbruil/doctrine-specification)
-[![License](https://poser.pugx.org/rikbruil/doctrine-specification/license.svg)](https://packagist.org/packages/rikbruil/doctrine-specification)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rikbruil/Doctrine-Specification/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rikbruil/Doctrine-Specification/?branch=master)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/bb221821-1ba6-4613-b39f-f43718aaa92d/mini.png)](https://insight.sensiolabs.com/projects/bb221821-1ba6-4613-b39f-f43718aaa92d)
 
-Doctrine [Specification pattern][specification_pattern] for building queries dynamically and with re-usable classes for composition.
+Doctrine [Specification pattern][specification_pattern] for building queries dynamically and with re-usable classes for
+composition.
 
-This library started out as an adaptation of Benjamin Eberlei's [blog post][blog_post]. I was also inspired by the [Happyr Doctrine-Specification][happyr_spec] code, however this library has some small differences.
-The main one is that SpecificationRepository->match() does not return the results directly, but returns the query object.
+This library started out as an adaptation of Benjamin Eberlei's [blog post][blog_post]. I was also inspired by
+the [Happyr Doctrine-Specification][happyr_spec] code, however this library has some small differences.
+The main one is that SpecificationRepository->match() does not return the results directly, but returns the query
+object.
 
 Since I like Doctrine's Paginator object, I wanted to be able to use that in combination with the Specification pattern.
 
-__Note:__ In versions prior to 1.2 it was required to extend the SpecificationRepository class. This is no longer needed since we provide a SpecificationRepositoryTrait that you can use instead.
-The class is still provided for backwards compatibility reasons. There is also the SpecificationAwareInterface that you can use if you need it.
+__Note:__ In versions prior to 1.2 it was required to extend the SpecificationRepository class. This is no longer needed
+since we provide a SpecificationRepositoryTrait that you can use instead.
+The class is still provided for backwards compatibility reasons. There is also the SpecificationAwareInterface that you
+can use if you need it.
 
 ## Usage
 
-Install the latest version with `composer require rikbruil/doctrine-specification`
+Install the latest version with `composer require purist/doctrine-specification`
 
 ```php
 // Not using the lib
@@ -67,6 +66,7 @@ return $this->em->getRepository('Advertisement')->match($spec)->execute();
 ```
 
 ## Composition
+
 A bonus of this pattern is composition, which makes specifications very reusable:
 
 ```php
@@ -168,5 +168,7 @@ This library is heavily inspired by Benjamin Eberlei's [blog post][blog_post]
 and [Happyr's Doctrine-Specification library][happyr_spec].
 
 [specification_pattern]: http://en.wikipedia.org/wiki/Specification_pattern
+
 [happyr_spec]: https://github.com/Happyr/Doctrine-Specification
+
 [blog_post]: http://www.whitewashing.de/2013/03/04/doctrine_repositories.html
