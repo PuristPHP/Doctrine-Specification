@@ -1,28 +1,29 @@
 <?php
 
-namespace spec\Rb\Specification\Doctrine;
+namespace spec\Purist\Specification\Doctrine;
 
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Rb\Specification\Doctrine\Exception\LogicException;
-use Rb\Specification\Doctrine\Result\ModifierInterface;
-use Rb\Specification\Doctrine\SpecificationInterface;
-use Rb\Specification\Doctrine\SpecificationRepository;
+use Purist\Specification\Doctrine\Exception\LogicException;
+use Purist\Specification\Doctrine\Result\ModifierInterface;
+use Purist\Specification\Doctrine\SpecificationInterface;
+use Purist\Specification\Doctrine\SpecificationRepository;
 
 class SpecificationRepositorySpec extends ObjectBehavior
 {
-    private $dqlAlias = 'e';
+    private string $dqlAlias = 'e';
 
-    private $expression = 'expr';
+    private string $expression = 'expr';
 
-    private $result = 'result';
+    private string $result = 'result';
 
-    public function let(EntityManager $entityManager, ClassMetadata $classMetadata)
+    public function let(EntityManager $entityManager, ClassMetadata $classMetadata): void
     {
+        $classMetadata->name = 'foo';
         $this->beAnInstanceOf(SpecificationRepository::class);
         $this->beConstructedWith($entityManager, $classMetadata);
     }
@@ -31,17 +32,14 @@ class SpecificationRepositorySpec extends ObjectBehavior
         SpecificationInterface $specification,
         EntityManager $entityManager,
         QueryBuilder $queryBuilder,
-        AbstractQuery $query
-    ) {
+        Query $query,
+    ): void {
         $this->prepare($specification, $entityManager, $queryBuilder, $query);
-        $specification->isSatisfiedBy(Argument::any())
-            ->willReturn(true);
 
-        $specification->modify($queryBuilder, $this->dqlAlias)
-            ->shouldBeCalled();
+        $specification->isSatisfiedBy(Argument::any())->willReturn(true);
+        $specification->modify($queryBuilder, $this->dqlAlias)->shouldBeCalled();
 
-        $this->match($specification)
-            ->shouldReturn($query);
+        $this->match($specification)->shouldReturn($query);
 
         $query->execute();
     }
@@ -50,9 +48,9 @@ class SpecificationRepositorySpec extends ObjectBehavior
         SpecificationInterface $specification,
         EntityManager $entityManager,
         QueryBuilder $queryBuilder,
-        AbstractQuery $query,
-        ModifierInterface $modifier
-    ) {
+        Query $query,
+        ModifierInterface $modifier,
+    ): void {
         $this->prepare($specification, $entityManager, $queryBuilder, $query);
         $specification->isSatisfiedBy(Argument::any())
             ->willReturn(true);
@@ -72,8 +70,8 @@ class SpecificationRepositorySpec extends ObjectBehavior
         SpecificationInterface $specification,
         EntityManager $entityManager,
         QueryBuilder $queryBuilder,
-        AbstractQuery $query
-    ) {
+        Query $query,
+    ): void {
         $this->prepare($specification, $entityManager, $queryBuilder, $query);
         $specification->isSatisfiedBy(Argument::any())
             ->willReturn(false);
@@ -86,8 +84,8 @@ class SpecificationRepositorySpec extends ObjectBehavior
         SpecificationInterface $specification,
         EntityManager $entityManager,
         QueryBuilder $queryBuilder,
-        AbstractQuery $query
-    ) {
+        Query $query,
+    ): void {
         $entityManager->createQueryBuilder()->willReturn($queryBuilder);
 
         $queryBuilder->select($this->dqlAlias)->willReturn($queryBuilder);
@@ -104,18 +102,13 @@ class SpecificationRepositorySpec extends ObjectBehavior
 
     /**
      * Prepare mocks.
-     *
-     * @param SpecificationInterface $specification
-     * @param EntityManager          $entityManager
-     * @param QueryBuilder           $queryBuilder
-     * @param AbstractQuery          $query
      */
     private function prepare(
         SpecificationInterface $specification,
         EntityManager $entityManager,
         QueryBuilder $queryBuilder,
-        AbstractQuery $query
-    ) {
+        Query $query,
+    ): void {
         $entityManager->createQueryBuilder()->willReturn($queryBuilder);
 
         $specification->modify($queryBuilder, $this->dqlAlias)->willReturn($this->expression);

@@ -1,28 +1,25 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Condition;
+namespace Purist\Specification\Doctrine\Condition;
 
 use Doctrine\ORM\QueryBuilder;
 
 class NotIn extends In
 {
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): string
     {
         $paramName = $this->generateParameterName($queryBuilder);
         $queryBuilder->setParameter($paramName, $this->value);
 
         return (string) $queryBuilder->expr()->notIn(
             $this->createPropertyWithAlias($dqlAlias),
-            sprintf(':%s', $paramName)
+            sprintf(':%s', $paramName),
         );
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     *
-     * @return string
-     */
-    protected function generateParameterName(QueryBuilder $queryBuilder)
+    #[\Override]
+    protected function generateParameterName(QueryBuilder $queryBuilder): string
     {
         return sprintf('not_in_%d', count($queryBuilder->getParameters()));
     }

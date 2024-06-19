@@ -1,34 +1,28 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Condition;
+namespace Purist\Specification\Doctrine\Condition;
 
 use Doctrine\ORM\Query\Expr\Comparison as DoctrineComparison;
 use Doctrine\ORM\QueryBuilder;
-use InvalidArgumentException;
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
 class EqualsProperty extends Comparison
 {
     /**
-     * @param string      $field
-     * @param string      $field2
-     * @param string|null $dqlAlias
-     *
      * @throws InvalidArgumentException
      */
-    public function __construct($field, $field2, $dqlAlias = null)
+    public function __construct(string $field, string $field2, ?string $dqlAlias = null)
     {
         parent::__construct(self::EQ, $field, $field2, $dqlAlias);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): string
     {
         return (string) new DoctrineComparison(
             $this->createPropertyWithAlias($dqlAlias),
             $this->operator,
-            $this->createAliasedName($this->value, $dqlAlias)
+            $this->createAliasedName($this->value, $dqlAlias),
         );
     }
 }

@@ -1,19 +1,15 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Condition;
+namespace Purist\Specification\Doctrine\Condition;
 
-use Rb\Specification\Doctrine\Exception\InvalidArgumentException;
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
 class Equals extends Comparison
 {
     /**
-     * @param string      $field
-     * @param string      $value
-     * @param string|null $dqlAlias
-     *
      * @throws InvalidArgumentException
      */
-    public function __construct($field, $value, $dqlAlias = null)
+    public function __construct(string $field, string $value, ?string $dqlAlias = null)
     {
         parent::__construct(self::EQ, $field, $value, $dqlAlias);
     }

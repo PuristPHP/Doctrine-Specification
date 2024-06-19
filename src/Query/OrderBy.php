@@ -1,38 +1,29 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Query;
+namespace Purist\Specification\Doctrine\Query;
 
 use Doctrine\ORM\QueryBuilder;
-use Rb\Specification\Doctrine\AbstractSpecification;
-use Rb\Specification\Doctrine\Exception\InvalidArgumentException;
+use Purist\Specification\Doctrine\AbstractSpecification;
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
-/**
- * Class OrderBy.
- */
 class OrderBy extends AbstractSpecification
 {
-    const ASC  = 'ASC';
-    const DESC = 'DESC';
+    public const ASC = 'ASC';
+
+    public const DESC = 'DESC';
+
+    protected ?string $order;
+
+    private static array $validOrder = [self::ASC, self::DESC];
 
     /**
-     * @var string
-     */
-    protected $order;
-
-    private static $validOrder = [self::ASC, self::DESC];
-
-    /**
-     * @param string      $field
-     * @param string      $order
-     * @param string|null $dqlAlias
-     *
      * @throws InvalidArgumentException
      */
-    public function __construct($field, $order = null, $dqlAlias = null)
+    public function __construct(string $field, ?string $order = null, ?string $dqlAlias = null)
     {
-        $order = ! $order ? self::ASC : strtoupper($order);
+        $order = null !== $order && '' !== $order && '0' !== $order ? strtoupper($order) : self::ASC;
 
-        if (! in_array($order, self::$validOrder, true)) {
+        if (!in_array($order, self::$validOrder, true)) {
             throw new InvalidArgumentException();
         }
 
@@ -41,14 +32,14 @@ class OrderBy extends AbstractSpecification
         parent::__construct($field, $dqlAlias);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): ?string
     {
         $queryBuilder->addOrderBy(
             $this->createPropertyWithAlias($dqlAlias),
-            $this->order
+            $this->order,
         );
+
+        return null;
     }
 }

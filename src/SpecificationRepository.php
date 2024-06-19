@@ -1,6 +1,6 @@
 <?php
 
-namespace Rb\Specification\Doctrine;
+namespace Purist\Specification\Doctrine;
 
 use Doctrine\ORM\EntityRepository;
 

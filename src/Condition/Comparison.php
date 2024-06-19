@@ -1,72 +1,53 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Condition;
+namespace Purist\Specification\Doctrine\Condition;
 
 use Doctrine\ORM\Query\Expr\Comparison as DoctrineComparison;
 use Doctrine\ORM\QueryBuilder;
-use Rb\Specification\Doctrine\AbstractSpecification;
-use Rb\Specification\Doctrine\Exception\InvalidArgumentException;
+use Purist\Specification\Doctrine\AbstractSpecification;
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
 class Comparison extends AbstractSpecification
 {
-    const EQ   = '=';
-    const NEQ  = '<>';
-    const LT   = '<';
-    const LTE  = '<=';
-    const GT   = '>';
-    const GTE  = '>=';
-    const LIKE = 'LIKE';
+    public const string EQ = '=';
+
+    public const string NEQ = '<>';
+
+    public const string LT = '<';
+
+    public const string LTE = '<=';
+
+    public const string GT = '>';
+
+    public const string GTE = '>=';
+
+    public const string LIKE = 'LIKE';
 
     /**
      * @var string[]
      */
-    protected static $operators = [self::EQ, self::NEQ, self::LT, self::LTE, self::GT, self::GTE, self::LIKE];
+    protected static array $operators = [self::EQ, self::NEQ, self::LT, self::LTE, self::GT, self::GTE, self::LIKE];
+    protected string $operator;
 
     /**
-     * @var string
-     */
-    protected $value;
-
-    /**
-     * @var string
-     */
-    protected $operator;
-
-    /**
-     * @param string      $operator
-     * @param string      $field
-     * @param string      $value
-     * @param string|null $dqlAlias
-     *
      * @throws InvalidArgumentException
      */
-    public function __construct($operator, $field, $value, $dqlAlias = null)
+    public function __construct(string $operator, string $field, protected string $value, ?string $dqlAlias = null)
     {
-        if (! in_array($operator, self::$operators, true)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    '"%s" is not a valid operator. Valid operators: %s',
-                    $operator,
-                    implode(', ', self::$operators)
-                )
-            );
+        if (!in_array($operator, self::$operators, true)) {
+            throw new InvalidArgumentException(sprintf('"%s" is not a valid operator. Valid operators: %s', $operator, implode(', ', self::$operators)));
         }
 
         $this->operator = $operator;
-        $this->value    = $value;
 
         parent::__construct($field, $dqlAlias);
     }
 
     /**
      * Return a string expression which can be used as condition (in WHERE-clause).
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param string       $dqlAlias
-     *
-     * @return string
      */
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): string
     {
         $paramName = $this->generateParameterName($queryBuilder);
         $queryBuilder->setParameter($paramName, $this->value);
@@ -74,18 +55,14 @@ class Comparison extends AbstractSpecification
         return (string) new DoctrineComparison(
             $this->createPropertyWithAlias($dqlAlias),
             $this->operator,
-            sprintf(':%s', $paramName)
+            sprintf(':%s', $paramName),
         );
     }
 
     /**
      * Return automatically generated parameter name.
-     *
-     * @param QueryBuilder $queryBuilder
-     *
-     * @return string
      */
-    protected function generateParameterName(QueryBuilder $queryBuilder)
+    protected function generateParameterName(QueryBuilder $queryBuilder): string
     {
         return sprintf('comparison_%d', count($queryBuilder->getParameters()));
     }

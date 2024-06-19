@@ -12,22 +12,21 @@
   ],
   "minimum-stability": "stable",
   "autoload": {
-    "psr-4": {"Rb\\Specification\\Doctrine\\": "src/"}
+    "psr-4": {"Purist\\Specification\\Doctrine\\": "src/"}
   },
   "autoload-dev": {
-    "psr-4": {"spec\\Rb\\Specification\\Doctrine\\": "spec/"}
+    "psr-4": {"spec\\Purist\\Specification\\Doctrine\\": "spec/"}
   },
   "require": {
-    "php": ">=5.5",
-    "doctrine/orm": "^2.2",
-    "doctrine/collections": "^1.2",
-    "rikbruil/specification": "0.9.*"
+    "php": "^8.3",
+    "doctrine/orm": "^2.2|^3.0",
+    "doctrine/collections": "^2.0",
+    "purist/specification": "dev-master"
   },
   "require-dev": {
-    "phpspec/phpspec": "^2.0",
-    "henrikbjorn/phpspec-code-coverage": "^2.0",
-    "friendsofphp/php-cs-fixer": "^2.0",
-    "satooshi/php-coveralls": "^1.0"
+    "phpspec/phpspec": "^7.5",
+    "rector/rector": "^1.1",
+    "friendsofphp/php-cs-fixer": "^3.59"
   },
   "extra": {
     "branch-alias": {
@@ -37,5 +36,8 @@
   "scripts": {
     "test": "vendor/bin/phpspec run",
     "fix-style": "vendor/bin/php-cs-fixer fix"
-  }
+  },
+  "repositories": [
+    { "type": "git", "url": "https://github.com/PuristPHP/specification.git" }
+  ]
 }

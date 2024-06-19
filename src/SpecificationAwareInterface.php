@@ -1,9 +1,9 @@
 <?php
 
-namespace Rb\Specification\Doctrine;
+namespace Purist\Specification\Doctrine;
 
-use Doctrine\ORM\Query;
-use Rb\Specification\Doctrine\Result\ModifierInterface;
+use Doctrine\ORM\AbstractQuery;
+use Purist\Specification\Doctrine\Result\ModifierInterface;
 
 /**
  * SpecificationAware can be used to implement custom repository.
@@ -12,11 +12,6 @@ interface SpecificationAwareInterface
 {
     /**
      * Get the query after matching with given specification.
-     *
-     * @param SpecificationInterface $specification
-     * @param ModifierInterface      $modifier
-     *
-     * @return Query
      */
-    public function match(SpecificationInterface $specification, ModifierInterface $modifier = null);
+    public function match(SpecificationInterface $specification, ?ModifierInterface $modifier = null): AbstractQuery;
 }

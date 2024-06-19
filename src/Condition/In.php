@@ -1,49 +1,30 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Condition;
+namespace Purist\Specification\Doctrine\Condition;
 
 use Doctrine\ORM\QueryBuilder;
-use Rb\Specification\Doctrine\AbstractSpecification;
+use Purist\Specification\Doctrine\AbstractSpecification;
 
 class In extends AbstractSpecification
 {
-    /**
-     * @var mixed
-     */
-    protected $value;
-
-    /**
-     * @param string      $field
-     * @param mixed       $value
-     * @param string|null $dqlAlias
-     */
-    public function __construct($field, $value, $dqlAlias = null)
+    public function __construct(string $field, protected mixed $value, ?string $dqlAlias = null)
     {
-        $this->value = $value;
-
         parent::__construct($field, $dqlAlias);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): string
     {
         $paramName = $this->generateParameterName($queryBuilder);
         $queryBuilder->setParameter($paramName, $this->value);
 
         return (string) $queryBuilder->expr()->in(
             $this->createPropertyWithAlias($dqlAlias),
-            sprintf(':%s', $paramName)
+            sprintf(':%s', $paramName),
         );
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     *
-     * @return string
-     */
-    protected function generateParameterName(QueryBuilder $queryBuilder)
+    protected function generateParameterName(QueryBuilder $queryBuilder): string
     {
         return sprintf('in_%d', count($queryBuilder->getParameters()));
     }

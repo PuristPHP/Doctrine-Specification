@@ -1,36 +1,27 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Condition;
+namespace Purist\Specification\Doctrine\Condition;
 
-use Rb\Specification\Doctrine\Exception\InvalidArgumentException;
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
 class Like extends Comparison
 {
-    const CONTAINS    = '%%%s%%';
-    const ENDS_WITH   = '%%%s';
-    const STARTS_WITH = '%s%%';
+    public const string CONTAINS = '%%%s%%';
+
+    public const string ENDS_WITH = '%%%s';
+
+    public const string STARTS_WITH = '%s%%';
 
     /**
-     * @param string      $field
-     * @param string      $value
-     * @param string      $format
-     * @param string|null $dqlAlias
-     *
      * @throws InvalidArgumentException
      */
-    public function __construct($field, $value, $format = self::CONTAINS, $dqlAlias = null)
+    public function __construct(string $field, string $value, string $format = self::CONTAINS, ?string $dqlAlias = null)
     {
         $formattedValue = $this->formatValue($format, $value);
         parent::__construct(self::LIKE, $field, $formattedValue, $dqlAlias);
     }
 
-    /**
-     * @param string $format
-     * @param string $value
-     *
-     * @return string
-     */
-    private function formatValue($format, $value)
+    private function formatValue(string $format, string $value): string
     {
         return sprintf($format, $value);
     }

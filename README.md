@@ -1,4 +1,4 @@
-# Doctrine Specification 
+# Doctrine Specification
 [![Build Status](https://travis-ci.org/rikbruil/Doctrine-Specification.svg)](https://travis-ci.org/rikbruil/Doctrine-Specification)
 [![Coverage Status](https://coveralls.io/repos/rikbruil/Doctrine-Specification/badge.svg?branch=master)](https://coveralls.io/r/rikbruil/Doctrine-Specification?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/rikbruil/doctrine-specification/v/stable.svg)](https://packagist.org/packages/rikbruil/doctrine-specification)
@@ -43,12 +43,12 @@ return $qb->where('r.ended = 0')
 ```
 
 ```php
-use Rb\Specification\Doctrine\Condition\Equals;
-use Rb\Specification\Doctrine\Condition\IsNull;
-use Rb\Specification\Doctrine\Condition\LessThan;
-use Rb\Specification\Doctrine\Logic\AndX;
-use Rb\Specification\Doctrine\Logic\OrX;
-use Rb\Specification\Doctrine\Specification;
+use Purist\Specification\Doctrine\Condition\Equals;
+use Purist\Specification\Doctrine\Condition\IsNull;
+use Purist\Specification\Doctrine\Condition\LessThan;
+use Purist\Specification\Doctrine\Logic\AndX;
+use Purist\Specification\Doctrine\Logic\OrX;
+use Purist\Specification\Doctrine\Specification;
 
 // Using the lib
 $spec = new Specification([
@@ -89,7 +89,7 @@ class ExpiredAds extends Specification
         ];
         parent::__construct($specs);
     }
-    
+
     public function isSatisfiedBy($value)
     {
         return $value === Advertisement::class;
@@ -107,7 +107,7 @@ class AdsByUser extends Specification
             new Join('user', 'u'),
             new Equals('id', $user->getId(), 'u'),
         ];
-        
+
         parent::__construct($specs);
     }
 
@@ -131,7 +131,7 @@ class SomeService
 
         return $this->em->getRepository('Advertisement')->match($spec)->execute();
     }
-    
+
     /**
      * Fetch adverts paginated by Doctrine Paginator with joins intact.
      * A paginator can be iterated over like a normal array or Doctrine Collection
@@ -142,7 +142,7 @@ class SomeService
             new ExpiredAds(),
             new AdsByUser($user),
         ]);
-        
+
         $query = $this->em->getRepository('Advertisement')->match($spec);
         $query->setFirstResult(($page - 1) * $size))
             ->setMaxResults($size);
@@ -155,7 +155,7 @@ class SomeService
 
 Doctrine-Specification requires:
 
-- PHP 5.5+
+- PHP 8.3+
 - Doctrine 2.2
 
 ## License

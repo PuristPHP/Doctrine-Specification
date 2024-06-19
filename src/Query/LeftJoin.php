@@ -1,21 +1,18 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Query;
+namespace Purist\Specification\Doctrine\Query;
 
-use Rb\Specification\Doctrine\Exception\InvalidArgumentException;
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
 class LeftJoin extends Join
 {
     /**
-     * @param string      $field
-     * @param string      $newAlias
-     * @param string|null $dqlAlias
-     *
      * @throws InvalidArgumentException
      */
-    public function __construct($field, $newAlias, $dqlAlias = null)
+    public function __construct(string $field, string $newAlias, ?string $dqlAlias = null)
     {
-        $this->setType(self::LEFT_JOIN);
         parent::__construct($field, $newAlias, $dqlAlias);
+
+        $this->setType(self::LEFT_JOIN);
     }
 }

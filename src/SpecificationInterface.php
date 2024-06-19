@@ -1,19 +1,13 @@
 <?php
 
-namespace Rb\Specification\Doctrine;
+namespace Purist\Specification\Doctrine;
 
 use Doctrine\ORM\QueryBuilder;
 
 /**
  * SpecificationInterface can be used to implement custom specifications.
  */
-interface SpecificationInterface extends \Rb\Specification\SpecificationInterface
+interface SpecificationInterface extends \Purist\Specification\SpecificationInterface
 {
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param string       $dqlAlias
-     *
-     * @return string|null
-     */
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias);
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): ?string;
 }

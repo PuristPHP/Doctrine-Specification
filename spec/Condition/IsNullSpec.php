@@ -1,29 +1,29 @@
 <?php
 
-namespace spec\Rb\Specification\Doctrine\Condition;
+namespace spec\Purist\Specification\Doctrine\Condition;
 
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use PhpSpec\ObjectBehavior;
-use Rb\Specification\Doctrine\SpecificationInterface;
+use Purist\Specification\Doctrine\SpecificationInterface;
 
 class IsNullSpec extends ObjectBehavior
 {
-    private $field = 'foo';
+    private string $field = 'foo';
 
-    private $dqlAlias = 'a';
+    private string $dqlAlias = 'a';
 
-    public function let()
+    public function let(): void
     {
         $this->beConstructedWith($this->field, $this->dqlAlias);
     }
 
-    public function it_is_an_expression()
+    public function it_is_an_expression(): void
     {
         $this->shouldBeAnInstanceOf(SpecificationInterface::class);
     }
 
-    public function it_calls_null(QueryBuilder $queryBuilder, Expr $expr)
+    public function it_calls_null(QueryBuilder $queryBuilder, Expr $expr): void
     {
         $expression = 'a.foo is null';
 
@@ -34,15 +34,16 @@ class IsNullSpec extends ObjectBehavior
         $this->modify($queryBuilder, 'b')->shouldReturn($expression);
     }
 
-    public function it_uses_dql_alias_if_passed(QueryBuilder $queryBuilder, Expr $expr)
+    public function it_uses_dql_alias_if_passed(QueryBuilder $queryBuilder, Expr $expr): void
     {
         $dqlAlias = 'x';
+        $expression = 'x.foo is null';
+
         $this->beConstructedWith($this->field, null);
         $queryBuilder->expr()->willReturn($expr);
-
-        $expr->isNull(sprintf('%s.%s', $dqlAlias, $this->field))->shouldBeCalled();
+        $expr->isNull(sprintf('%s.%s', $dqlAlias, $this->field))->willReturn($expression);
 
         $this->isSatisfiedBy('foo')->shouldReturn(true);
-        $this->modify($queryBuilder, $dqlAlias);
+        $this->modify($queryBuilder, $dqlAlias)->shouldReturn($expression);
     }
 }

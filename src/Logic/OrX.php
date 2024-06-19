@@ -1,19 +1,13 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Logic;
+namespace Purist\Specification\Doctrine\Logic;
 
-use Rb\Specification\Doctrine\SpecificationInterface;
+use Purist\Specification\Doctrine\SpecificationInterface;
 
-/**
- * Class OrX.
- */
 class OrX extends Composite
 {
-    /**
-     * @param SpecificationInterface ...$spec
-     */
-    public function __construct()
+    public function __construct(SpecificationInterface ...$specification)
     {
-        parent::__construct(self::OR_X, func_get_args());
+        parent::__construct(self::OR_X, $specification);
     }
 }

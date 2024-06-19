@@ -1,64 +1,37 @@
 <?php
 
-namespace Rb\Specification\Doctrine;
+namespace Purist\Specification\Doctrine;
 
 abstract class AbstractSpecification implements SpecificationInterface
 {
-    /**
-     * @var string
-     */
-    protected $field;
-
-    /**
-     * @var string|null
-     */
-    protected $dqlAlias;
-
-    /**
-     * @param string      $field
-     * @param string|null $dqlAlias
-     */
-    public function __construct($field, $dqlAlias = null)
+    public function __construct(protected string $field, protected ?string $dqlAlias = null)
     {
-        $this->field    = $field;
-        $this->dqlAlias = $dqlAlias;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isSatisfiedBy($value)
+    #[\Override]
+    public function isSatisfiedBy(mixed $value): bool
     {
         return true;
     }
 
     /**
      * Create a formatted string for the given property prefixed with the DQL alias.
-     *
-     * @param string $dqlAlias
-     *
-     * @return string
      */
-    protected function createPropertyWithAlias($dqlAlias)
+    protected function createPropertyWithAlias(?string $dqlAlias): string
     {
         return $this->createAliasedName($this->field, $dqlAlias);
     }
 
     /**
      * Create a formatted string where the value will be prefixed with DQL alias (if not already present).
-     *
-     * @param string $value
-     * @param string $dqlAlias
-     *
-     * @return string
      */
-    protected function createAliasedName($value, $dqlAlias)
+    protected function createAliasedName(string $value, ?string $dqlAlias): string
     {
-        if (strpos($value, '.') !== false) {
+        if (str_contains($value, '.')) {
             return $value;
         }
 
-        if (! empty($this->dqlAlias)) {
+        if (null !== $this->dqlAlias && '' !== $this->dqlAlias && '0' !== $this->dqlAlias) {
             $dqlAlias = $this->dqlAlias;
         }
 

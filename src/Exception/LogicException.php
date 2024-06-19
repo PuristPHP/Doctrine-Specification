@@ -1,6 +1,6 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Exception;
+namespace Purist\Specification\Doctrine\Exception;
 
 class LogicException extends \Exception
 {
