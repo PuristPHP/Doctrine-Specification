@@ -18,7 +18,7 @@ class IndexBy extends AbstractSpecification
     public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): ?string
     {
         $queryBuilder->indexBy(
-            $this->dqlAlias ?? $dqlAlias,
+            $this->dqlAlias ?? $dqlAlias ?? '',
             $this->createPropertyWithAlias($dqlAlias),
         );
 

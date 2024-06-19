@@ -14,6 +14,8 @@ use Doctrine\ORM\EntityRepository;
  *
  * @see SpecificationRepositoryTrait
  * @see SpecificationAwareInterface
+ *
+ * @extends EntityRepository<object>
  */
 class SpecificationRepository extends EntityRepository implements SpecificationAwareInterface
 {

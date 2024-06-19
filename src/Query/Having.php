@@ -15,6 +15,9 @@ class Having implements SpecificationInterface
     public const string AND_HAVING = 'andHaving';
     public const string OR_HAVING = 'orHaving';
 
+    /**
+     * @var array<string>
+     */
     protected static array $types = [self::HAVING, self::AND_HAVING, self::OR_HAVING];
     protected string $type;
 

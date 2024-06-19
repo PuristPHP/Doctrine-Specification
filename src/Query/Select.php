@@ -12,14 +12,16 @@ use Purist\Specification\Doctrine\SpecificationInterface;
 class Select implements SpecificationInterface
 {
     public const string SELECT = 'select';
-
     public const string ADD_SELECT = 'addSelect';
-
+    /**
+     * @var array<string>
+     */
     protected static array $types = [self::SELECT, self::ADD_SELECT];
-
     protected string $type;
 
     /**
+     * @param string|array<string> $select
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(protected string|array $select, string $type = self::ADD_SELECT)

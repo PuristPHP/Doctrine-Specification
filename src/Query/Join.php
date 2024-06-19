@@ -10,19 +10,17 @@ use Purist\Specification\Doctrine\SpecificationInterface;
 class Join extends AbstractSpecification
 {
     public const string JOIN = 'join';
-
     public const string LEFT_JOIN = 'leftJoin';
-
     public const string INNER_JOIN = 'innerJoin';
 
+    /**
+     * @var array<string>
+     */
     protected static array $types = [self::JOIN, self::LEFT_JOIN, self::INNER_JOIN];
 
     private ?string $conditionType = null;
-
     private string|SpecificationInterface|null $condition = null;
-
     private ?string $indexedBy = null;
-
     private string $type = self::JOIN;
 
     public function __construct(string $field, private readonly string $newAlias, ?string $dqlAlias = null)

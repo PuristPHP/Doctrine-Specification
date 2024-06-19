@@ -7,7 +7,7 @@ use Purist\Specification\Doctrine\AbstractSpecification;
 
 class Between extends AbstractSpecification
 {
-    public function __construct(string $field, protected $from, protected $to, ?string $dqlAlias = null)
+    public function __construct(string $field, protected mixed $from, protected mixed $to, ?string $dqlAlias = null)
     {
         parent::__construct($field, $dqlAlias);
     }

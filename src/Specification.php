@@ -9,11 +9,16 @@ use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 /**
  * Specification can be used as a quick-start to writing your own specifications.
  * It extends Doctrines ArrayCollection class, so you can compose specifications.
+ *
+ * @extends ArrayCollection<int, SpecificationInterface>
  */
 class Specification extends ArrayCollection implements SpecificationInterface
 {
     public const string AND_X = 'andX';
     public const string OR_X = 'orX';
+    /**
+     * @var array<string>
+     */
     protected static array $types = [self::OR_X, self::AND_X];
     private string $type = self::AND_X;
 
@@ -56,7 +61,7 @@ class Specification extends ArrayCollection implements SpecificationInterface
     }
 
     #[\Override]
-    public function isSatisfiedBy($value): bool
+    public function isSatisfiedBy(mixed $value): bool
     {
         /** @var SpecificationInterface $child */
         foreach ($this as $child) {

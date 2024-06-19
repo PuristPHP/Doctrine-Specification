@@ -8,17 +8,25 @@ use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
 /**
  * CollectionResultModifierInterface allows to compose one/more ResultModifier classes.
+ *
+ * @extends ArrayCollection<int, ModifierInterface>
  */
 class ModifierCollection extends ArrayCollection implements ModifierInterface
 {
     /**
      * Compose one or more ResultModifier and evaluate as a single modifier.
+     *
+     * @param ModifierInterface ...$modifiers
+     *
+     * @throws InvalidArgumentException
      */
     public function __construct(mixed ...$modifiers)
     {
         parent::__construct();
 
-        array_map($this->add(...), $modifiers);
+        foreach ($modifiers as $modifier) {
+            $this->add($modifier);
+        }
     }
 
     /**
@@ -38,8 +46,6 @@ class ModifierCollection extends ArrayCollection implements ModifierInterface
 
     /**
      * Modify the query (e.g. select more fields/relations).
-     *
-     * @throws InvalidArgumentException
      */
     #[\Override]
     public function modify(AbstractQuery $query): void

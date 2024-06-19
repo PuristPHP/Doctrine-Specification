@@ -26,7 +26,8 @@
   "require-dev": {
     "phpspec/phpspec": "^7.5",
     "rector/rector": "^1.1",
-    "friendsofphp/php-cs-fixer": "^3.59"
+    "friendsofphp/php-cs-fixer": "^3.59",
+    "phpstan/phpstan": "^1.11"
   },
   "extra": {
     "branch-alias": {

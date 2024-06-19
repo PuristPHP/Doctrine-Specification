@@ -8,12 +8,12 @@ use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
 class OrderBy extends AbstractSpecification
 {
-    public const ASC = 'ASC';
-
-    public const DESC = 'DESC';
-
+    public const string ASC = 'ASC';
+    public const string DESC = 'DESC';
     protected ?string $order;
-
+    /**
+     * @var array<string>
+     */
     private static array $validOrder = [self::ASC, self::DESC];
 
     /**
