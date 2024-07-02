@@ -30,18 +30,18 @@ class ModifierCollection extends ArrayCollection implements ModifierInterface
     }
 
     /**
-     * @param ModifierInterface $value
+     * @param ModifierInterface $element
      *
      * @throws InvalidArgumentException
      */
     #[\Override]
-    public function add(mixed $value): void
+    public function add(mixed $element): void
     {
-        if (!$value instanceof ModifierInterface) {
-            throw new InvalidArgumentException(sprintf('"%s" does not implement "%s"!', (is_object($value)) ? $value::class : $value, ModifierInterface::class));
+        if (!$element instanceof ModifierInterface) {
+            throw new InvalidArgumentException(sprintf('"%s" does not implement "%s"!', (is_object($element)) ? $element::class : $element, ModifierInterface::class));
         }
 
-        parent::add($value);
+        parent::add($element);
     }
 
     /**

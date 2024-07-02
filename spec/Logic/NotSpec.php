@@ -11,7 +11,7 @@ class NotSpec extends ObjectBehavior
 {
     public function let(SpecificationInterface $condition): void
     {
-        $this->beConstructedWith($condition, null);
+        $this->beConstructedWith($condition);
     }
 
     public function it_calls_parent_match(QueryBuilder $queryBuilder, Expr $expr, SpecificationInterface $condition): void
@@ -32,16 +32,16 @@ class NotSpec extends ObjectBehavior
     public function it_modifies_parent_query(QueryBuilder $queryBuilder, SpecificationInterface $specification): void
     {
         $dqlAlias = 'a';
-        $this->beConstructedWith($specification, null);
+        $this->beConstructedWith($specification);
 
-        $specification->modify($queryBuilder, $dqlAlias)->shouldBeCalled();
+        $specification->modify($queryBuilder, $dqlAlias)->shouldBeCalled()->willReturn(null);
         $this->modify($queryBuilder, $dqlAlias);
     }
 
     public function it_should_call_supports_on_parent(SpecificationInterface $specification): void
     {
         $className = 'foo';
-        $this->beConstructedWith($specification, null);
+        $this->beConstructedWith($specification);
 
         $specification->isSatisfiedBy($className)->shouldBeCalled();
 

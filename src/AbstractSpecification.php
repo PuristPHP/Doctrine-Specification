@@ -2,7 +2,7 @@
 
 namespace Purist\Specification\Doctrine;
 
-abstract class AbstractSpecification implements SpecificationInterface
+abstract readonly class AbstractSpecification implements SpecificationInterface
 {
     public function __construct(protected string $field, protected ?string $dqlAlias = null)
     {
@@ -31,7 +31,7 @@ abstract class AbstractSpecification implements SpecificationInterface
             return $value;
         }
 
-        if (null !== $this->dqlAlias && '' !== $this->dqlAlias && '0' !== $this->dqlAlias) {
+        if (null !== $this->dqlAlias) {
             $dqlAlias = $this->dqlAlias;
         }
 

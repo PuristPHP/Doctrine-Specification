@@ -6,28 +6,25 @@ use Doctrine\ORM\QueryBuilder;
 use Purist\Specification\Doctrine\AbstractSpecification;
 use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
-class OrderBy extends AbstractSpecification
+readonly class OrderBy extends AbstractSpecification
 {
     public const string ASC = 'ASC';
     public const string DESC = 'DESC';
-    protected ?string $order;
     /**
      * @var array<string>
      */
-    private static array $validOrder = [self::ASC, self::DESC];
+    private const array VALID_ORDERS = [self::ASC, self::DESC];
 
     /**
      * @throws InvalidArgumentException
      */
-    public function __construct(string $field, ?string $order = null, ?string $dqlAlias = null)
+    public function __construct(string $field, private ?string $order = null, ?string $dqlAlias = null)
     {
         $order = null !== $order && '' !== $order && '0' !== $order ? strtoupper($order) : self::ASC;
 
-        if (!in_array($order, self::$validOrder, true)) {
+        if (!in_array($order, self::VALID_ORDERS, true)) {
             throw new InvalidArgumentException();
         }
-
-        $this->order = $order;
 
         parent::__construct($field, $dqlAlias);
     }

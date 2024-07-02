@@ -9,24 +9,25 @@ use Purist\Specification\Doctrine\SpecificationInterface;
 /**
  * Select will modify the query-builder, so you can specify SELECT-statements.
  */
-class Select implements SpecificationInterface
+readonly class Select implements SpecificationInterface
 {
     public const string SELECT = 'select';
     public const string ADD_SELECT = 'addSelect';
     /**
      * @var array<string>
      */
-    protected static array $types = [self::SELECT, self::ADD_SELECT];
-    protected string $type;
+    protected const array TYPES = [self::SELECT, self::ADD_SELECT];
 
     /**
      * @param string|array<string> $select
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(protected string|array $select, string $type = self::ADD_SELECT)
+    public function __construct(protected string|array $select, private string $type = self::ADD_SELECT)
     {
-        $this->setType($type);
+        if (!in_array($type, self::TYPES, true)) {
+            throw new InvalidArgumentException(sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::TYPES)));
+        }
     }
 
     #[\Override]
@@ -40,13 +41,9 @@ class Select implements SpecificationInterface
     /**
      * @throws InvalidArgumentException
      */
-    public function setType(string $type): void
+    public function setType(string $type): self
     {
-        if (!in_array($type, self::$types, true)) {
-            throw new InvalidArgumentException(sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::$types)));
-        }
-
-        $this->type = $type;
+        return new self($this->select, $type);
     }
 
     #[\Override]

@@ -9,7 +9,7 @@ use Purist\Specification\Doctrine\AbstractSpecification;
 /**
  * IndexBy will modify the query-builder, so you can specify INDEX BY-statements.
  */
-class IndexBy extends AbstractSpecification
+readonly class IndexBy extends AbstractSpecification
 {
     /**
      * @throws QueryException

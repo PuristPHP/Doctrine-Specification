@@ -7,7 +7,7 @@ use Doctrine\ORM\AbstractQuery;
 /**
  * Hydrate results as array instead of objects.
  */
-class AsArray implements ModifierInterface
+readonly class AsArray implements ModifierInterface
 {
     /**
      * Modify the query (e.g. select more fields/relations).

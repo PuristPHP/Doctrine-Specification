@@ -5,7 +5,7 @@ namespace Purist\Specification\Doctrine\Condition;
 use Doctrine\ORM\QueryBuilder;
 use Purist\Specification\Doctrine\AbstractSpecification;
 
-class Between extends AbstractSpecification
+readonly class Between extends AbstractSpecification
 {
     public function __construct(string $field, protected mixed $from, protected mixed $to, ?string $dqlAlias = null)
     {

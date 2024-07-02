@@ -46,12 +46,11 @@ class JoinSpec extends ObjectBehavior
 
         $this->beConstructedWith('user', 'authUser');
 
-        $this->setConditionType($joinType)->shouldReturn($this);
-        $this->setCondition($joinCondition)->shouldReturn($this);
+        $join = $this->setConditionType($joinType)->setCondition($joinCondition);
 
         $queryBuilder->join('a.user', 'authUser', $joinType, $joinCondition, null)->shouldBeCalled()->willReturn($queryBuilder);
 
-        $this->modify($queryBuilder, 'a');
+        $join->modify($queryBuilder, 'a');
     }
 
     public function it_should_be_able_to_set_index_by_for_join(QueryBuilder $queryBuilder): void
@@ -62,9 +61,9 @@ class JoinSpec extends ObjectBehavior
 
         $queryBuilder->join('a.user', 'authUser', null, null, $indexedBy)->shouldBeCalled()->willReturn($queryBuilder);
 
-        $this->setIndexedBy($indexedBy)->shouldReturn($this);
+        $join = $this->setIndexedBy($indexedBy);
 
-        $this->modify($queryBuilder, 'a');
+        $join->modify($queryBuilder, 'a');
     }
 
     public function it_should_accept_specifications_as_condition(QueryBuilder $queryBuilder, SpecificationInterface $specification): void
@@ -78,9 +77,8 @@ class JoinSpec extends ObjectBehavior
 
         $queryBuilder->join('a.user', 'authUser', $type, $condition, null)->shouldBeCalled()->willReturn($queryBuilder);
 
-        $this->setConditionType($type)->shouldReturn($this);
-        $this->setCondition($specification)->shouldReturn($this);
-        $this->modify($queryBuilder, 'a');
+        $join = $this->setConditionType($type)->setCondition($specification);
+        $join->modify($queryBuilder, 'a');
     }
 
     public function it_throws_an_exception_when_setting_illegal_type(): void

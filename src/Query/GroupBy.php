@@ -9,23 +9,33 @@ use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 /**
  * @author  Kyle Tucker <kyleatucker@gmail.com>
  */
-class GroupBy extends AbstractSpecification
+readonly class GroupBy extends AbstractSpecification
 {
     public const string GROUP_BY = 'groupBy';
     public const string ADD_GROUP_BY = 'addGroupBy';
-
-    /** @var string[] */
-    protected static array $types = [self::GROUP_BY, self::ADD_GROUP_BY];
-    protected string $type;
+    /**
+     * @var array<string>
+     */
+    protected const array TYPES = [self::GROUP_BY, self::ADD_GROUP_BY];
 
     /**
      * @throws InvalidArgumentException
      */
-    public function __construct(string $field, string $type = self::ADD_GROUP_BY, ?string $dqlAlias = null)
+    public function __construct(string $field, protected string $type = self::ADD_GROUP_BY, ?string $dqlAlias = null)
     {
         parent::__construct($field, $dqlAlias);
 
-        $this->setType($type);
+        if (!in_array($type, self::TYPES, true)) {
+            throw new InvalidArgumentException(sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::TYPES)));
+        }
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function setType(string $type): self
+    {
+        return new self($this->field, $type, $this->dqlAlias);
     }
 
     #[\Override]
@@ -34,17 +44,5 @@ class GroupBy extends AbstractSpecification
         $queryBuilder->{$this->type}($this->createPropertyWithAlias($dqlAlias));
 
         return null;
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
-    public function setType(string $type): void
-    {
-        if (!in_array($type, self::$types, true)) {
-            throw new InvalidArgumentException(sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::$types)));
-        }
-
-        $this->type = $type;
     }
 }

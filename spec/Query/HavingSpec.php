@@ -38,33 +38,30 @@ class HavingSpec extends ObjectBehavior
     {
         $condition = 'foo';
         $specification->modify($queryBuilder, $this->dqlAlias)->willReturn($condition);
-
-        $this->setType(Having::HAVING);
         $queryBuilder->having($condition)->shouldBeCalled()->willReturn($queryBuilder);
 
-        $this->modify($queryBuilder, $this->dqlAlias);
+        $having = $this->setType(Having::HAVING);
+        $having->modify($queryBuilder, $this->dqlAlias);
     }
 
     public function it_calls_andHaving_on_query_builder(QueryBuilder $queryBuilder, SpecificationInterface $specification): void
     {
         $condition = 'foo';
         $specification->modify($queryBuilder, $this->dqlAlias)->willReturn($condition);
-
-        $this->setType(Having::AND_HAVING);
         $queryBuilder->andHaving($condition)->shouldBeCalled()->willReturn($queryBuilder);
 
-        $this->modify($queryBuilder, $this->dqlAlias);
+        $having = $this->setType(Having::AND_HAVING);
+        $having->modify($queryBuilder, $this->dqlAlias);
     }
 
     public function it_calls_orHaving_on_query_builder(QueryBuilder $queryBuilder, SpecificationInterface $specification): void
     {
         $condition = 'foo';
         $specification->modify($queryBuilder, $this->dqlAlias)->willReturn($condition);
-
-        $this->setType(Having::OR_HAVING);
         $queryBuilder->orHaving($condition)->shouldBeCalled()->willReturn($queryBuilder);
 
-        $this->modify($queryBuilder, $this->dqlAlias);
+        $having = $this->setType(Having::OR_HAVING);
+        $having->modify($queryBuilder, $this->dqlAlias);
     }
 
     public function it_throws_exception_when_setting_illegal_type(): void

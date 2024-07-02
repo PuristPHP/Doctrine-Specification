@@ -19,11 +19,13 @@ class Specification extends ArrayCollection implements SpecificationInterface
     /**
      * @var array<string>
      */
-    protected static array $types = [self::OR_X, self::AND_X];
+    protected const array TYPES = [self::OR_X, self::AND_X];
     private string $type = self::AND_X;
 
     /**
      * @param SpecificationInterface[] $elements
+     *
+     * @throws InvalidArgumentException
      */
     public function __construct(array $elements = [])
     {
@@ -33,18 +35,18 @@ class Specification extends ArrayCollection implements SpecificationInterface
     }
 
     /**
-     * @param SpecificationInterface $value
+     * @param SpecificationInterface $element
      *
      * @throws InvalidArgumentException
      */
     #[\Override]
-    public function add(mixed $value): void
+    public function add(mixed $element): void
     {
-        if (!$value instanceof SpecificationInterface) {
-            throw new InvalidArgumentException(sprintf('"%s" does not implement "%s"!', (is_object($value)) ? $value::class : $value, SpecificationInterface::class));
+        if (!$element instanceof SpecificationInterface) {
+            throw new InvalidArgumentException(sprintf('"%s" does not implement "%s"!', (is_object($element)) ? $element::class : $element, SpecificationInterface::class));
         }
 
-        parent::add($value);
+        parent::add($element);
     }
 
     #[\Override]
@@ -60,11 +62,14 @@ class Specification extends ArrayCollection implements SpecificationInterface
         return $queryBuilder->expr()->{$this->type}(...$result);
     }
 
+    /**
+     * @throws \Exception
+     */
     #[\Override]
     public function isSatisfiedBy(mixed $value): bool
     {
         /** @var SpecificationInterface $child */
-        foreach ($this as $child) {
+        foreach ($this->getIterator() as $child) {
             if ($child->isSatisfiedBy($value)) {
                 continue;
             }
@@ -76,12 +81,17 @@ class Specification extends ArrayCollection implements SpecificationInterface
     }
 
     /**
-     * @param SpecificationInterface[] $children
+     * @param array<SpecificationInterface> $children
+     *
+     * @throws InvalidArgumentException
      */
     protected function setChildren(array $children): static
     {
         $this->clear();
-        array_map($this->add(...), $children);
+
+        foreach ($children as $child) {
+            $this->add($child);
+        }
 
         return $this;
     }
@@ -93,8 +103,8 @@ class Specification extends ArrayCollection implements SpecificationInterface
      */
     protected function setType(string $type): static
     {
-        if (!in_array($type, self::$types, true)) {
-            $message = sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::$types));
+        if (!in_array($type, self::TYPES, true)) {
+            $message = sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::TYPES));
             throw new InvalidArgumentException($message);
         }
 

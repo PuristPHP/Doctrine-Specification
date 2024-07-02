@@ -7,39 +7,33 @@ use Purist\Specification\Doctrine\AbstractSpecification;
 use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 use Purist\Specification\Doctrine\SpecificationInterface;
 
-class Join extends AbstractSpecification
+readonly class Join extends AbstractSpecification
 {
     public const string JOIN = 'join';
     public const string LEFT_JOIN = 'leftJoin';
     public const string INNER_JOIN = 'innerJoin';
-
     /**
      * @var array<string>
      */
-    protected static array $types = [self::JOIN, self::LEFT_JOIN, self::INNER_JOIN];
-
-    private ?string $conditionType = null;
-    private string|SpecificationInterface|null $condition = null;
-    private ?string $indexedBy = null;
-    private string $type = self::JOIN;
-
-    public function __construct(string $field, private readonly string $newAlias, ?string $dqlAlias = null)
-    {
-        parent::__construct($field, $dqlAlias);
-    }
+    protected const array TYPES = [self::JOIN, self::LEFT_JOIN, self::INNER_JOIN];
 
     /**
      * @throws InvalidArgumentException
      */
-    public function setType(string $type): static
-    {
-        if (!in_array($type, self::$types, true)) {
-            throw new InvalidArgumentException(sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::$types)));
+    public function __construct(
+        string $field,
+        private string $newAlias,
+        ?string $dqlAlias = null,
+        private string $type = self::JOIN,
+        private string|SpecificationInterface|null $condition = null,
+        private ?string $conditionType = null,
+        private ?string $indexedBy = null,
+    ) {
+        if (!in_array($type, self::TYPES, true)) {
+            throw new InvalidArgumentException(sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::TYPES)));
         }
 
-        $this->type = $type;
-
-        return $this;
+        parent::__construct($field, $dqlAlias);
     }
 
     #[\Override]
@@ -62,32 +56,66 @@ class Join extends AbstractSpecification
     }
 
     /**
+     * @throws InvalidArgumentException
+     */
+    public function setType(string $type): self
+    {
+        return new self(
+            $this->field,
+            $this->newAlias,
+            $this->dqlAlias,
+            $type,
+            $this->condition,
+            $this->conditionType,
+            $this->indexedBy,
+        );
+    }
+
+    /**
      * Set the condition type to be used on the join (WITH/ON).
      */
-    public function setConditionType(?string $conditionType): static
+    public function setConditionType(?string $conditionType): self
     {
-        $this->conditionType = $conditionType;
-
-        return $this;
+        return new self(
+            $this->field,
+            $this->newAlias,
+            $this->dqlAlias,
+            $this->type,
+            $this->condition,
+            $conditionType,
+            $this->indexedBy,
+        );
     }
 
     /**
      * Set the condition to be used for the join statement.
      */
-    public function setCondition(SpecificationInterface|string|null $condition): static
+    public function setCondition(SpecificationInterface|string|null $condition): self
     {
-        $this->condition = $condition;
-
-        return $this;
+        return new self(
+            $this->field,
+            $this->newAlias,
+            $this->dqlAlias,
+            $this->type,
+            $condition,
+            $this->conditionType,
+            $this->indexedBy,
+        );
     }
 
     /**
      * Set the property which will be used as index for the returned collection.
      */
-    public function setIndexedBy(?string $indexedBy): static
+    public function setIndexedBy(?string $indexedBy): self
     {
-        $this->indexedBy = $indexedBy;
-
-        return $this;
+        return new self(
+            $this->field,
+            $this->newAlias,
+            $this->dqlAlias,
+            $this->type,
+            $this->condition,
+            $this->conditionType,
+            $indexedBy,
+        );
     }
 }

@@ -4,7 +4,7 @@ namespace Purist\Specification\Doctrine\Condition;
 
 use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
-class NotEquals extends Comparison
+readonly class NotEquals extends Comparison
 {
     /**
      * @throws InvalidArgumentException

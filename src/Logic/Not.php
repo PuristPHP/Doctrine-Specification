@@ -18,7 +18,8 @@ readonly class Not implements SpecificationInterface
     public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): ?string
     {
         $filter = $this->parent->modify($queryBuilder, $dqlAlias);
-        if (null === $filter || '' === $filter || '0' === $filter) {
+
+        if (null === $filter) {
             return '';
         }
 

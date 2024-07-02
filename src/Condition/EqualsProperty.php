@@ -6,7 +6,7 @@ use Doctrine\ORM\Query\Expr\Comparison as DoctrineComparison;
 use Doctrine\ORM\QueryBuilder;
 use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
-class EqualsProperty extends Comparison
+readonly class EqualsProperty extends Comparison
 {
     /**
      * @throws InvalidArgumentException

@@ -4,7 +4,7 @@ namespace Purist\Specification\Doctrine\Condition;
 
 use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
-class GreaterThan extends Comparison
+readonly class GreaterThan extends Comparison
 {
     /**
      * @throws InvalidArgumentException

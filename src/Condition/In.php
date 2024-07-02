@@ -5,7 +5,7 @@ namespace Purist\Specification\Doctrine\Condition;
 use Doctrine\ORM\QueryBuilder;
 use Purist\Specification\Doctrine\AbstractSpecification;
 
-class In extends AbstractSpecification
+readonly class In extends AbstractSpecification
 {
     public function __construct(string $field, protected mixed $value, ?string $dqlAlias = null)
     {

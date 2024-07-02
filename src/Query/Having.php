@@ -7,26 +7,26 @@ use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 use Purist\Specification\Doctrine\SpecificationInterface;
 
 /**
- * @author  Kyle Tucker <kyleatucker@gmail.com>
+ * @author Kyle Tucker <kyleatucker@gmail.com>
  */
-class Having implements SpecificationInterface
+readonly class Having implements SpecificationInterface
 {
     public const string HAVING = 'having';
     public const string AND_HAVING = 'andHaving';
     public const string OR_HAVING = 'orHaving';
-
     /**
      * @var array<string>
      */
-    protected static array $types = [self::HAVING, self::AND_HAVING, self::OR_HAVING];
-    protected string $type;
+    protected const array TYPES = [self::HAVING, self::AND_HAVING, self::OR_HAVING];
 
     /**
      * @throws InvalidArgumentException
      */
-    public function __construct(protected SpecificationInterface $specification, string $type = self::AND_HAVING)
+    public function __construct(protected SpecificationInterface $specification, protected string $type = self::AND_HAVING)
     {
-        $this->setType($type);
+        if (!in_array($type, self::TYPES, true)) {
+            throw new InvalidArgumentException(sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::TYPES)));
+        }
     }
 
     #[\Override]
@@ -46,12 +46,8 @@ class Having implements SpecificationInterface
     /**
      * @throws InvalidArgumentException
      */
-    public function setType(string $type): void
+    public function setType(string $type): self
     {
-        if (!in_array($type, self::$types, true)) {
-            throw new InvalidArgumentException(sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::$types)));
-        }
-
-        $this->type = $type;
+        return new self($this->specification, $type);
     }
 }

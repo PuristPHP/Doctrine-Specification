@@ -5,7 +5,7 @@ namespace Purist\Specification\Doctrine\Condition;
 use Doctrine\ORM\QueryBuilder;
 use Purist\Specification\Doctrine\AbstractSpecification;
 
-class IsInstanceOf extends AbstractSpecification
+readonly class IsInstanceOf extends AbstractSpecification
 {
     public function __construct(string $field, private string $className, ?string $dqlAlias = null)
     {
