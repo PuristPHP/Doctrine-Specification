@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Purist\Specification\Doctrine\Condition;
 
 use Doctrine\ORM\Query\Expr\Comparison as DoctrineComparison;

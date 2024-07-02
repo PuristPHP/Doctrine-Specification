@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Purist\Specification\Doctrine;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -59,7 +61,7 @@ class Specification extends ArrayCollection implements SpecificationInterface
             return null;
         }
 
-        return $queryBuilder->expr()->{$this->type}(...$result);
+        return (string) $queryBuilder->expr()->{$this->type}(...$result);
     }
 
     /**

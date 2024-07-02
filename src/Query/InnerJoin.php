@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Purist\Specification\Doctrine\Query;
 
 use Purist\Specification\Doctrine\Exception\InvalidArgumentException;

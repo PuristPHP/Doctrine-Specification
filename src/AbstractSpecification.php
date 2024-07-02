@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Purist\Specification\Doctrine;
 
 abstract readonly class AbstractSpecification implements SpecificationInterface
