@@ -1,0 +1,25 @@
+services:
+    php: &php
+        build: .
+        volumes:
+            - .:/app
+        working_dir: /app
+
+    phpspec:
+        <<: *php
+        entrypoint: vendor/bin/phpspec
+        command: run
+
+    phpstan:
+        <<: *php
+        entrypoint: vendor/bin/phpstan
+
+    php-cs-fixer:
+        <<: *php
+        entrypoint: vendor/bin/php-cs-fixer fix
+
+    composer:
+        image: composer:latest
+        volumes:
+            - .:/app
+        working_dir: /app

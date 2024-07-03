@@ -1,0 +1,13 @@
+suites:
+    main:
+        namespace: Purist\Specification\Doctrine
+        psr4_prefix: Purist\Specification\Doctrine
+extensions:
+    FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
+        format:
+            - text
+            - clover
+            - html
+        output:
+            html: coverage/html
+            clover: coverage/clover.xml

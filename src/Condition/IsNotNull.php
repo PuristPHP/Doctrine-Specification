@@ -1,18 +1,19 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Condition;
+declare(strict_types=1);
+
+namespace Purist\Specification\Doctrine\Condition;
 
 use Doctrine\ORM\QueryBuilder;
+use Purist\Specification\Doctrine\AbstractSpecification;
 
-class IsNotNull extends IsNull
+readonly class IsNotNull extends AbstractSpecification
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): string
     {
-        return (string) $queryBuilder->expr()->isNotNull(
-            $this->createPropertyWithAlias($dqlAlias)
+        return $queryBuilder->expr()->isNotNull(
+            $this->createPropertyWithAlias($dqlAlias),
         );
     }
 }

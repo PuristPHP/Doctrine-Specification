@@ -1,66 +1,42 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Query;
+declare(strict_types=1);
+
+namespace Purist\Specification\Doctrine\Query;
 
 use Doctrine\ORM\QueryBuilder;
-use Rb\Specification\Doctrine\AbstractSpecification;
-use Rb\Specification\Doctrine\Exception\InvalidArgumentException;
+use Purist\Specification\Doctrine\AbstractSpecification;
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
 
 /**
  * @author  Kyle Tucker <kyleatucker@gmail.com>
  */
-class GroupBy extends AbstractSpecification
+readonly class GroupBy extends AbstractSpecification
 {
-    const GROUP_BY     = 'groupBy';
-    const ADD_GROUP_BY = 'addGroupBy';
-
-    /** @var string[] */
-    protected static $types = [self::GROUP_BY, self::ADD_GROUP_BY];
-
-    /** @var string */
-    protected $type;
-
+    public const string GROUP_BY = 'groupBy';
+    public const string ADD_GROUP_BY = 'addGroupBy';
     /**
-     * Constructor.
-     *
-     * @param string      $field
-     * @param string      $type
-     * @param string|null $dqlAlias
+     * @var array<string>
      */
-    public function __construct($field, $type = self::ADD_GROUP_BY, $dqlAlias = null)
-    {
-        $this->setType($type);
-        parent::__construct($field, $dqlAlias);
-    }
+    protected const array TYPES = [self::GROUP_BY, self::ADD_GROUP_BY];
 
     /**
-     * {@inheritdoc}
-     */
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
-    {
-        call_user_func_array(
-            [$queryBuilder, $this->type],
-            [
-                $this->createPropertyWithAlias($dqlAlias),
-            ]
-        );
-    }
-
-    /**
-     * @param string $type
-     *
      * @throws InvalidArgumentException
      */
-    public function setType($type)
+    public function __construct(string $field, protected string $type = self::ADD_GROUP_BY, ?string $dqlAlias = null)
     {
-        if (! in_array($type, self::$types, true)) {
-            throw new InvalidArgumentException(sprintf(
-                '"%s" is not a valid type! Valid types: %s',
-                $type,
-                implode(', ', self::$types)
-            ));
-        }
+        parent::__construct($field, $dqlAlias);
 
-        $this->type = $type;
+        if (!in_array($type, self::TYPES, true)) {
+            throw new InvalidArgumentException(sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::TYPES)));
+        }
+    }
+
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): ?string
+    {
+        $queryBuilder->{$this->type}($this->createPropertyWithAlias($dqlAlias));
+
+        return null;
     }
 }

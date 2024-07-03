@@ -1,22 +1,24 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Logic;
+declare(strict_types=1);
 
-use Rb\Specification\Doctrine\Specification;
-use Rb\Specification\Doctrine\SpecificationInterface;
+namespace Purist\Specification\Doctrine\Logic;
 
-/**
- * Class Composite.
- */
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
+use Purist\Specification\Doctrine\Specification;
+use Purist\Specification\Doctrine\SpecificationInterface;
+
 class Composite extends Specification
 {
     /**
-     * @param string                   $type
      * @param SpecificationInterface[] $children
+     *
+     * @throws InvalidArgumentException
      */
-    public function __construct($type, array $children = [])
+    public function __construct(string $type, array $children = [])
     {
-        $this->setType($type)
-            ->setChildren($children);
+        parent::__construct($children);
+
+        $this->setType($type);
     }
 }

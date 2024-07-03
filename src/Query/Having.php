@@ -1,59 +1,55 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Query;
+declare(strict_types=1);
+
+namespace Purist\Specification\Doctrine\Query;
 
 use Doctrine\ORM\QueryBuilder;
-use Rb\Specification\Doctrine\Exception\InvalidArgumentException;
-use Rb\Specification\Doctrine\SpecificationInterface;
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
+use Purist\Specification\Doctrine\SpecificationInterface;
 
 /**
- * @author  Kyle Tucker <kyleatucker@gmail.com>
+ * @author Kyle Tucker <kyleatucker@gmail.com>
  */
-class Having implements SpecificationInterface
+readonly class Having implements SpecificationInterface
 {
-    const HAVING     = 'having';
-    const AND_HAVING = 'andHaving';
-    const OR_HAVING  = 'orHaving';
+    public const string HAVING = 'having';
+    public const string AND_HAVING = 'andHaving';
+    public const string OR_HAVING = 'orHaving';
+    /**
+     * @var array<string>
+     */
+    protected const array TYPES = [self::HAVING, self::AND_HAVING, self::OR_HAVING];
 
-    protected static $types = [self::HAVING, self::AND_HAVING, self::OR_HAVING];
-
-    /** @var string */
-    protected $type;
-
-    /** @var SpecificationInterface */
-    protected $specification;
-
-    public function __construct(SpecificationInterface $specification, $type = self::AND_HAVING)
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function __construct(protected SpecificationInterface $specification, protected string $type = self::AND_HAVING)
     {
-        $this->specification = $specification;
-        $this->setType($type);
+        if (!in_array($type, self::TYPES, true)) {
+            throw new InvalidArgumentException(sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::TYPES)));
+        }
     }
 
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): ?string
     {
-        call_user_func_array(
-            [$queryBuilder, $this->type],
-            [
-                $this->specification->modify($queryBuilder, $dqlAlias),
-            ]
-        );
+        $queryBuilder->{$this->type}($this->specification->modify($queryBuilder, $dqlAlias));
+
+        return null;
     }
 
-    public function isSatisfiedBy($value)
+    #[\Override]
+    public function isSatisfiedBy(mixed $value): bool
     {
         return true;
     }
 
-    public function setType($type)
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function setType(string $type): self
     {
-        if (! in_array($type, self::$types, true)) {
-            throw new InvalidArgumentException(sprintf(
-                '"%s" is not a valid type! Valid types: %s',
-                $type,
-                implode(', ', self::$types)
-            ));
-        }
-
-        $this->type = $type;
+        return new self($this->specification, $type);
     }
 }

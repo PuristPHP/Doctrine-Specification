@@ -1,19 +1,18 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Logic;
+declare(strict_types=1);
 
-use Rb\Specification\Doctrine\SpecificationInterface;
+namespace Purist\Specification\Doctrine\Logic;
+
+use Purist\Specification\Doctrine\SpecificationInterface;
 
 /**
  * AndX specification lets you compose a new Specification with other specification classes.
  */
 class AndX extends Composite
 {
-    /**
-     * @param SpecificationInterface ...$spec
-     */
-    public function __construct()
+    public function __construct(SpecificationInterface ...$specification)
     {
-        parent::__construct(self::AND_X, func_get_args());
+        parent::__construct(self::AND_X, $specification);
     }
 }

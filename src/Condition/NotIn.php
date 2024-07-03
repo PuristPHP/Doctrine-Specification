@@ -1,28 +1,32 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Condition;
+declare(strict_types=1);
+
+namespace Purist\Specification\Doctrine\Condition;
 
 use Doctrine\ORM\QueryBuilder;
+use Purist\Specification\Doctrine\AbstractSpecification;
 
-class NotIn extends In
+readonly class NotIn extends AbstractSpecification
 {
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
+    public function __construct(string $field, protected mixed $value, ?string $dqlAlias = null)
+    {
+        parent::__construct($field, $dqlAlias);
+    }
+
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): string
     {
         $paramName = $this->generateParameterName($queryBuilder);
         $queryBuilder->setParameter($paramName, $this->value);
 
         return (string) $queryBuilder->expr()->notIn(
             $this->createPropertyWithAlias($dqlAlias),
-            sprintf(':%s', $paramName)
+            sprintf(':%s', $paramName),
         );
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     *
-     * @return string
-     */
-    protected function generateParameterName(QueryBuilder $queryBuilder)
+    protected function generateParameterName(QueryBuilder $queryBuilder): string
     {
         return sprintf('not_in_%d', count($queryBuilder->getParameters()));
     }

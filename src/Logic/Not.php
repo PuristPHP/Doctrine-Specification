@@ -1,48 +1,35 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Logic;
+declare(strict_types=1);
+
+namespace Purist\Specification\Doctrine\Logic;
 
 use Doctrine\ORM\QueryBuilder;
-use Rb\Specification\Doctrine\SpecificationInterface;
+use Purist\Specification\Doctrine\SpecificationInterface;
 
 /**
  * Class Not negates whatever specification/filter is passed inside it.
  */
-class Not implements SpecificationInterface
+readonly class Not implements SpecificationInterface
 {
-    /**
-     * @var SpecificationInterface
-     */
-    private $parent;
-
-    /**
-     * @param SpecificationInterface $expr
-     */
-    public function __construct(SpecificationInterface $expr)
+    public function __construct(private SpecificationInterface $parent)
     {
-        $this->parent = $expr;
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param string       $dqlAlias
-     *
-     * @return string
-     */
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): ?string
     {
         $filter = $this->parent->modify($queryBuilder, $dqlAlias);
-        if (empty($filter)) {
+
+        if (null === $filter) {
             return '';
         }
 
         return (string) $queryBuilder->expr()->not($filter);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isSatisfiedBy($value)
+    #[\Override]
+    public function isSatisfiedBy(mixed $value): bool
     {
         return $this->parent->isSatisfiedBy($value);
     }

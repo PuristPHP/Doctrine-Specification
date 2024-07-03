@@ -1,57 +1,58 @@
 <?php
 
-namespace spec\Rb\Specification\Doctrine\Logic;
+namespace spec\Purist\Specification\Doctrine\Logic;
 
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use PhpSpec\ObjectBehavior;
-use Rb\Specification\Doctrine\Exception\InvalidArgumentException;
-use Rb\Specification\Doctrine\Logic\Composite;
-use Rb\Specification\Doctrine\SpecificationInterface;
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
+use Purist\Specification\Doctrine\Logic\Composite;
+use Purist\Specification\Doctrine\SpecificationInterface;
 
 class CompositeSpec extends ObjectBehavior
 {
-    const EXPRESSION = 'andX';
+    public const string EXPRESSION = 'andX';
 
-    public function let(SpecificationInterface $specificationA, SpecificationInterface $specificationB)
+    public function let(SpecificationInterface $specificationA, SpecificationInterface $specificationB): void
     {
         $this->beConstructedWith(self::EXPRESSION, [$specificationA, $specificationB]);
     }
 
-    public function it_is_a_specification()
+    public function it_is_a_specification(): void
     {
         $this->shouldHaveType(Composite::class);
     }
 
     public function it_supports_conditions(
         QueryBuilder $queryBuilder,
-        Expr $expression,
+        Expr $expr,
         SpecificationInterface $conditionA,
         SpecificationInterface $conditionB,
-        $x,
-        $y
-    ) {
+    ): void {
         $this->beConstructedWith(self::EXPRESSION, [$conditionA, $conditionB]);
 
         $dqlAlias = 'a';
+        $x = 'x';
+        $y = 'y';
+        $expression = new Expr\Andx([$x, $y]);
 
         $conditionA->isSatisfiedBy('foo')->willReturn(true);
         $conditionB->isSatisfiedBy('foo')->willReturn(true);
 
-        $conditionA->modify($queryBuilder, $dqlAlias)->willReturn($x);
-        $conditionB->modify($queryBuilder, $dqlAlias)->willReturn($y);
-        $queryBuilder->expr()->willReturn($expression);
+        $conditionA->modify($queryBuilder, $dqlAlias)->shouldBeCalled()->willReturn($x);
+        $conditionB->modify($queryBuilder, $dqlAlias)->shouldBeCalled()->willReturn($y);
+        $queryBuilder->expr()->willReturn($expr);
 
-        $expression->{self::EXPRESSION}($x, $y)->shouldBeCalled();
+        $expr->{self::EXPRESSION}($x, $y)->shouldBeCalled()->willReturn($expression);
 
         $this->isSatisfiedBy('foo')->shouldReturn(true);
-        $this->modify($queryBuilder, $dqlAlias);
+        $this->modify($queryBuilder, $dqlAlias)->shouldReturn((string) $expression);
     }
 
     public function it_should_fail_satisfaction_if_child_fails(
         SpecificationInterface $specificationA,
-        SpecificationInterface $specificationB
-    ) {
+        SpecificationInterface $specificationB,
+    ): void {
         $this->beConstructedWith(self::EXPRESSION, [$specificationA, $specificationB]);
 
         $specificationA->isSatisfiedBy('foo')->willReturn(true);
@@ -64,8 +65,8 @@ class CompositeSpec extends ObjectBehavior
         QueryBuilder $queryBuilder,
         Expr $expression,
         SpecificationInterface $specificationA,
-        SpecificationInterface $specificationB
-    ) {
+        SpecificationInterface $specificationB,
+    ): void {
         $this->beConstructedWith(self::EXPRESSION, [$specificationA, $specificationB]);
 
         $dqlAlias = 'a';
@@ -79,8 +80,8 @@ class CompositeSpec extends ObjectBehavior
 
     public function it_should_throw_exception_on_invalid_type(
         SpecificationInterface $specificationA,
-        SpecificationInterface $specificationB
-    ) {
+        SpecificationInterface $specificationB,
+    ): void {
         $type = 'foo';
 
         $this->beConstructedWith($type, [$specificationA, $specificationB]);
@@ -89,7 +90,7 @@ class CompositeSpec extends ObjectBehavior
             ->during('__construct', [$type, [$specificationA, $specificationB]]);
     }
 
-    public function it_should_throw_exception_on_invalid_child()
+    public function it_should_throw_exception_on_invalid_child(): void
     {
         $child = 'bar';
 

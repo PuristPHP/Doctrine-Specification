@@ -1,39 +1,27 @@
 <?php
 
-namespace Rb\Specification\Doctrine;
+declare(strict_types=1);
 
-use Doctrine\ORM\Query;
+namespace Purist\Specification\Doctrine;
+
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\QueryBuilder;
-use Rb\Specification\Doctrine\Exception\LogicException;
-use Rb\Specification\Doctrine\Result\ModifierInterface;
+use Purist\Specification\Doctrine\Exception\LogicException;
+use Purist\Specification\Doctrine\Result\ModifierInterface;
 
-/**
- * Class SpecificationRepositoryTrait.
- */
 trait SpecificationRepositoryTrait
 {
-    /**
-     * @var string
-     */
-    protected $dqlAlias = 'e';
+    protected string $dqlAlias = 'e';
 
     /**
      * @see SpecificationAwareInterface::match()
      *
-     * @param SpecificationInterface $specification
-     * @param ModifierInterface|null $modifier
-     *
      * @throws LogicException
-     *
-     * @return Query
      */
-    public function match(SpecificationInterface $specification, ModifierInterface $modifier = null)
+    public function match(SpecificationInterface $specification, ?ModifierInterface $modifier = null): AbstractQuery
     {
-        if (! $specification->isSatisfiedBy($this->getEntityName())) {
-            throw new LogicException(sprintf(
-                'Specification "%s" not supported by this repository!',
-                get_class($specification)
-            ));
+        if (!$specification->isSatisfiedBy($this->getEntityName())) {
+            throw new LogicException(sprintf('Specification "%s" not supported by this repository!', $specification::class));
         }
 
         $queryBuilder = $this->createQueryBuilder($this->dqlAlias);
@@ -46,16 +34,13 @@ trait SpecificationRepositoryTrait
      * Modifies the QueryBuilder according to the passed Specification.
      * Will also set the condition for this query if needed.
      *
-     * @param QueryBuilder           $queryBuilder
-     * @param SpecificationInterface $specification
-     *
      * @internal param string $dqlAlias
      */
-    private function modifyQueryBuilder(QueryBuilder $queryBuilder, SpecificationInterface $specification)
+    private function modifyQueryBuilder(QueryBuilder $queryBuilder, SpecificationInterface $specification): void
     {
         $condition = $specification->modify($queryBuilder, $this->dqlAlias);
 
-        if (empty($condition)) {
+        if (null === $condition) {
             return;
         }
 
@@ -64,17 +49,12 @@ trait SpecificationRepositoryTrait
 
     /**
      * Modifies and returns a Query object according to the (optional) result modifier.
-     *
-     * @param QueryBuilder           $queryBuilder
-     * @param ModifierInterface|null $modifier
-     *
-     * @return Query
      */
-    private function modifyQuery(QueryBuilder $queryBuilder, ModifierInterface $modifier = null)
+    private function modifyQuery(QueryBuilder $queryBuilder, ?ModifierInterface $modifier = null): AbstractQuery
     {
         $query = $queryBuilder->getQuery();
 
-        if ($modifier) {
+        if ($modifier instanceof ModifierInterface) {
             $modifier->modify($query);
         }
 

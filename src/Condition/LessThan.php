@@ -1,19 +1,17 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Condition;
+declare(strict_types=1);
 
-use Rb\Specification\Doctrine\Exception\InvalidArgumentException;
+namespace Purist\Specification\Doctrine\Condition;
 
-class LessThan extends Comparison
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
+
+readonly class LessThan extends Comparison
 {
     /**
-     * @param string      $field
-     * @param string      $value
-     * @param string|null $dqlAlias
-     *
      * @throws InvalidArgumentException
      */
-    public function __construct($field, $value, $dqlAlias = null)
+    public function __construct(string $field, string $value, ?string $dqlAlias = null)
     {
         parent::__construct(self::LT, $field, $value, $dqlAlias);
     }

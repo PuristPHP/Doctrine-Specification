@@ -1,23 +1,29 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Query;
+declare(strict_types=1);
 
+namespace Purist\Specification\Doctrine\Query;
+
+use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\QueryBuilder;
-use Rb\Specification\Doctrine\AbstractSpecification;
+use Purist\Specification\Doctrine\AbstractSpecification;
 
 /**
- * IndexBy will modify the query-builder so you can specify INDEX BY-statements.
+ * IndexBy will modify the query-builder, so you can specify INDEX BY-statements.
  */
-class IndexBy extends AbstractSpecification
+readonly class IndexBy extends AbstractSpecification
 {
     /**
-     * {@inheritdoc}
+     * @throws QueryException
      */
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): ?string
     {
         $queryBuilder->indexBy(
-            $this->dqlAlias ?: $dqlAlias,
-            $this->createPropertyWithAlias($dqlAlias)
+            $this->dqlAlias ?? $dqlAlias ?? '',
+            $this->createPropertyWithAlias($dqlAlias),
         );
+
+        return null;
     }
 }

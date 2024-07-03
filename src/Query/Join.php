@@ -1,90 +1,47 @@
 <?php
 
-namespace Rb\Specification\Doctrine\Query;
+declare(strict_types=1);
+
+namespace Purist\Specification\Doctrine\Query;
 
 use Doctrine\ORM\QueryBuilder;
-use Rb\Specification\Doctrine\AbstractSpecification;
-use Rb\Specification\Doctrine\Exception\InvalidArgumentException;
-use Rb\Specification\Doctrine\SpecificationInterface;
+use Purist\Specification\Doctrine\AbstractSpecification;
+use Purist\Specification\Doctrine\Exception\InvalidArgumentException;
+use Purist\Specification\Doctrine\SpecificationInterface;
 
-/**
- * Class Join.
- */
-class Join extends AbstractSpecification
+readonly class Join extends AbstractSpecification
 {
-    const JOIN       = 'join';
-    const LEFT_JOIN  = 'leftJoin';
-    const INNER_JOIN = 'innerJoin';
-
-    protected static $types = [self::JOIN, self::LEFT_JOIN, self::INNER_JOIN];
-
+    public const string JOIN = 'join';
+    public const string LEFT_JOIN = 'leftJoin';
+    public const string INNER_JOIN = 'innerJoin';
     /**
-     * @var string
+     * @var array<string>
      */
-    private $newAlias;
+    protected const array TYPES = [self::JOIN, self::LEFT_JOIN, self::INNER_JOIN];
 
     /**
-     * @var string|null
-     */
-    private $conditionType = null;
-
-    /**
-     * @var string|SpecificationInterface|null
-     */
-    private $condition = null;
-
-    /**
-     * @var string|null
-     */
-    private $indexedBy = null;
-
-    /**
-     * @var string
-     */
-    private $type = self::JOIN;
-
-    /**
-     * @param string      $field
-     * @param string      $newAlias
-     * @param string|null $dqlAlias
-     *
      * @throws InvalidArgumentException
      */
-    public function __construct($field, $newAlias, $dqlAlias = null)
-    {
-        $this->newAlias = $newAlias;
+    public function __construct(
+        string $field,
+        private string $newAlias,
+        ?string $dqlAlias = null,
+        private string $type = self::JOIN,
+        private string|SpecificationInterface|null $condition = null,
+        private ?string $conditionType = null,
+        private ?string $indexedBy = null,
+    ) {
+        if (!in_array($type, self::TYPES, true)) {
+            throw new InvalidArgumentException(sprintf('"%s" is not a valid type! Valid types: %s', $type, implode(', ', self::TYPES)));
+        }
 
         parent::__construct($field, $dqlAlias);
     }
 
-    /**
-     * @param string $type
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return $this
-     */
-    public function setType($type)
+    #[\Override]
+    public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): ?string
     {
-        if (! in_array($type, self::$types, true)) {
-            throw new InvalidArgumentException(sprintf(
-                '"%s" is not a valid type! Valid types: %s',
-                $type,
-                implode(', ', self::$types)
-            ));
-        }
-
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function modify(QueryBuilder $queryBuilder, $dqlAlias)
-    {
-        if (! is_null($this->dqlAlias)) {
+        if (!is_null($this->dqlAlias)) {
             $dqlAlias = $this->dqlAlias;
         }
 
@@ -95,51 +52,72 @@ class Join extends AbstractSpecification
             $condition = $condition->modify($queryBuilder, $dqlAlias);
         }
 
-        call_user_func_array(
-            [$queryBuilder, $this->type],
-            [$property, $this->newAlias, $this->conditionType, $condition, $this->indexedBy]
+        $queryBuilder->{$this->type}($property, $this->newAlias, $this->conditionType, $condition, $this->indexedBy);
+
+        return null;
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function setType(string $type): self
+    {
+        return new self(
+            $this->field,
+            $this->newAlias,
+            $this->dqlAlias,
+            $type,
+            $this->condition,
+            $this->conditionType,
+            $this->indexedBy,
         );
     }
 
     /**
      * Set the condition type to be used on the join (WITH/ON).
-     *
-     * @param string $conditionType
-     *
-     * @return $this
      */
-    public function setConditionType($conditionType)
+    public function setConditionType(?string $conditionType): self
     {
-        $this->conditionType = $conditionType;
-
-        return $this;
+        return new self(
+            $this->field,
+            $this->newAlias,
+            $this->dqlAlias,
+            $this->type,
+            $this->condition,
+            $conditionType,
+            $this->indexedBy,
+        );
     }
 
     /**
      * Set the condition to be used for the join statement.
-     *
-     * @param string|SpecificationInterface $condition
-     *
-     * @return $this
      */
-    public function setCondition($condition)
+    public function setCondition(SpecificationInterface|string|null $condition): self
     {
-        $this->condition = $condition;
-
-        return $this;
+        return new self(
+            $this->field,
+            $this->newAlias,
+            $this->dqlAlias,
+            $this->type,
+            $condition,
+            $this->conditionType,
+            $this->indexedBy,
+        );
     }
 
     /**
      * Set the property which will be used as index for the returned collection.
-     *
-     * @param mixed $indexedBy
-     *
-     * @return $this
      */
-    public function setIndexedBy($indexedBy)
+    public function setIndexedBy(?string $indexedBy): self
     {
-        $this->indexedBy = $indexedBy;
-
-        return $this;
+        return new self(
+            $this->field,
+            $this->newAlias,
+            $this->dqlAlias,
+            $this->type,
+            $this->condition,
+            $this->conditionType,
+            $indexedBy,
+        );
     }
 }

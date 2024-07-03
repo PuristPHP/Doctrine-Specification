@@ -1,49 +1,52 @@
 <?php
 
-namespace spec\Rb\Specification\Doctrine\Condition;
+namespace spec\Purist\Specification\Doctrine\Condition;
 
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use PhpSpec\ObjectBehavior;
-use Rb\Specification\Doctrine\SpecificationInterface;
+use Purist\Specification\Doctrine\SpecificationInterface;
 
 class IsInstanceOfSpec extends ObjectBehavior
 {
-    private $className = '\Foo';
-    private $field     = 'foo';
+    private string $className = '\Foo';
 
-    private $dqlAlias = 'a';
+    private string $field = 'foo';
 
-    public function let()
+    private string $dqlAlias = 'a';
+
+    public function let(): void
     {
         $this->beConstructedWith($this->field, $this->className, $this->dqlAlias);
     }
 
-    public function it_is_an_expression()
+    public function it_is_an_expression(): void
     {
         $this->shouldBeAnInstanceOf(SpecificationInterface::class);
     }
 
-    public function it_calls_is_instance_of(QueryBuilder $queryBuilder, Expr $expr)
+    public function it_calls_is_instance_of(QueryBuilder $queryBuilder, Expr $expr): void
     {
-        $expression = 'a.foo instance of ' . $this->className;
+        $expression = new Expr\Comparison('a.foo', 'instance of', $this->className);
 
         $queryBuilder->expr()->willReturn($expr);
-        $expr->isInstanceOf(sprintf('%s.%s', $this->dqlAlias, $this->field), $this->className)->willReturn($expression);
+        $expr->isInstanceOf(sprintf('%s.%s', $this->dqlAlias, $this->field), $this->className)->shouldBeCalled()->willReturn($expression);
 
         $this->isSatisfiedBy('foo')->shouldReturn(true);
-        $this->modify($queryBuilder, 'b')->shouldReturn($expression);
+        $this->modify($queryBuilder, 'b')->shouldReturn((string) $expression);
     }
 
-    public function it_uses_dql_alias_if_passed(QueryBuilder $queryBuilder, Expr $expr)
+    public function it_uses_dql_alias_if_passed(QueryBuilder $queryBuilder, Expr $expr): void
     {
         $dqlAlias = 'x';
+        $expression = new Expr\Comparison('x.foo', 'instance of', $this->className);
+
         $this->beConstructedWith($this->field, $this->className, null);
         $queryBuilder->expr()->willReturn($expr);
 
-        $expr->isInstanceOf(sprintf('%s.%s', $dqlAlias, $this->field), $this->className)->shouldBeCalled();
+        $expr->isInstanceOf(sprintf('%s.%s', $dqlAlias, $this->field), $this->className)->shouldBeCalled()->willReturn($expression);
 
         $this->isSatisfiedBy('foo')->shouldReturn(true);
-        $this->modify($queryBuilder, $dqlAlias);
+        $this->modify($queryBuilder, $dqlAlias)->shouldReturn((string) $expression);
     }
 }
