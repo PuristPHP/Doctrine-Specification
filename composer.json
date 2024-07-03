@@ -1,5 +1,5 @@
 {
-  "name": "rikbruil/doctrine-specification",
+  "name": "purist/doctrine-specification",
   "description": "Doctrine Specification pattern for building queries dynamically and with re-usable classes for composition.",
   "type": "library",
   "keywords": ["doctrine", "repository", "specification"],
@@ -27,7 +27,8 @@
     "phpspec/phpspec": "^7.5",
     "rector/rector": "^1.1",
     "friendsofphp/php-cs-fixer": "^3.59",
-    "phpstan/phpstan": "^1.11"
+    "phpstan/phpstan": "^1.11",
+    "friends-of-phpspec/phpspec-code-coverage": "^6.3"
   },
   "extra": {
     "branch-alias": {
