@@ -40,7 +40,7 @@ trait SpecificationRepositoryTrait
     {
         $condition = $specification->modify($queryBuilder, $this->dqlAlias);
 
-        if (null === $condition || '' === $condition || '0' === $condition) {
+        if (null === $condition) {
             return;
         }
 

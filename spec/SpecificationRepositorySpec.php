@@ -92,7 +92,7 @@ class SpecificationRepositorySpec extends ObjectBehavior
 
         $specification->modify($queryBuilder, $this->dqlAlias, Argument::any())->shouldBeCalled();
         $specification->isSatisfiedBy(Argument::any())->willReturn(true);
-        $specification->modify($queryBuilder, $this->dqlAlias, Argument::any())->willReturn('');
+        $specification->modify($queryBuilder, $this->dqlAlias, Argument::any())->willReturn(null);
 
         $this->match($specification);
     }

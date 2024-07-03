@@ -32,14 +32,6 @@ readonly class GroupBy extends AbstractSpecification
         }
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
-    public function setType(string $type): self
-    {
-        return new self($this->field, $type, $this->dqlAlias);
-    }
-
     #[\Override]
     public function modify(QueryBuilder $queryBuilder, ?string $dqlAlias = null): ?string
     {
